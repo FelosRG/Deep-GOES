@@ -6,6 +6,8 @@ import os
 import sys
 PATH_SCRIPT = os.path.realpath(__file__) 
 DIR_SCRIPT  = "/".join(PATH_SCRIPT.split("/")[:-1])
+DIR_REPO    = "/".join(DIR_SCRIPT.split("/")[:-1])
+sys.path.append(DIR_REPO + "/lib/")
 
 import h5py
 import datetime
@@ -13,15 +15,14 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-from  lib import config
-from  lib import GOES
+import config
+import GOES
 
 DIR_DESCARGAS = f"{DIR_SCRIPT}/Descargas"
 DIR_DATASETS  = f"{DIR_SCRIPT}/Datasets"
 
 # Creamos directorio si no existen.
 Path(DIR_DATASETS).mkdir(parents=True,exist_ok=True)
-
 
 def generar_lista_dias(fecha_inicio,fecha_final,num_dias):
     """
@@ -78,23 +79,24 @@ def descargar_bandas(identificador,datetime_inicio,datetime_final,saltos=1):
     # Si es un unico identificador lo pasamos a lista por consistencia.
     if type(identificador) == str:
         identificador = [identificador]
-
+    
     for ident in identificador:
-        # Obtenemos los detalles de los productos a descargar.
-        producto = config.productos[ident]
-        banda    = None
-        if producto == "ABI-L1b-RadC": banda = int(ident)
+        if ident != "Altura":
+            # Obtenemos los detalles de los productos a descargar.
+            producto = config.productos[ident]
+            banda    = None
+            if producto == "ABI-L1b-RadC": banda = int(ident)
 
-        # Iniciamos descarga.
-        GOES.descargaIntervaloGOES16(
-            producto=producto,
-            datetime_inicio=datetime_inicio,
-            datetime_final=datetime_final,
-            banda=banda,
-            output_path=f"{DIR_DESCARGAS}/{ident}/",
-            verbose=False,
-            saltos=saltos 
-        )
+            # Iniciamos descarga.
+            GOES.descargaIntervaloGOES16(
+                producto=producto,
+                datetime_inicio=datetime_inicio,
+                datetime_final=datetime_final,
+                banda=banda,
+                output_path=f"{DIR_DESCARGAS}/{ident}/",
+                verbose=False,
+                saltos=saltos 
+            )
 
 def generar_ubicaciones(lat_inf,lat_sup,lon_inf,lon_sup,res_grid,res_goes):
     """
@@ -165,6 +167,10 @@ def generar_dataset(identificador,lista_ubicaciones,escala_km,ventana,nombre_dat
     
     Output:
         * None
+
+    Los datasets guardados tendran tamaño:
+        * Para variables que no sean la Altitud: (num_archivos,num_ubicaciones,resolucion,resolucion)
+        * Para la variable de Altitud: (num_ubicaciones,resolucion,resolucion)
     """
 
     # Nombre de salida.
@@ -174,36 +180,61 @@ def generar_dataset(identificador,lista_ubicaciones,escala_km,ventana,nombre_dat
     if type(identificador) == str:
         identificador = [identificador]
 
+
+    if "Altura" in identificador:
+        # Abrimos el archivo de altura según la escala.
+        if escala_km == 0.5:
+            nombre_archivo = "Altitud_CONUS_0.5km.h5"
+        elif escala_km == 1:
+            nombre_archivo = "Altitud_CONUS_1km.h5"
+        elif escala_km == 2:
+            nombre_archivo = "Altitud_CONUS_2km.h5"
+        else:
+            raise ValueError("No se ha seleccionado una resolución compatible con el array de altura.")   
+        with h5py.File(f"{DIR_REPO}/Recursos/CONUS/{nombre_archivo}","r") as file:
+            altura = file["Altura"][:]
+    
     with h5py.File(output_name,"w") as file:
         for ident in identificador:
 
-            # Obtenemos la lista de archivos disponibles.
-            path_archivos  = f"{DIR_DESCARGAS}/{ident}/"
-            lista_archivos = os.listdir(path_archivos)
-            lista_archivos.sort() # Importante para respetar el orden cronológico.
-            num_archivos   = len(lista_archivos)
-
-            # Lista para guardar todos los elementos de una variable.
-            lista_datos_variable = []
-
-            for index_archivo in range(num_archivos):
-                path_archivo = path_archivos + lista_archivos[index_archivo]
-                producto     = GOES.Producto(path_archivo)
-
-                # Mandamos los fill_values a 0
-                fill_value = producto.fill_value
-                producto.array[producto.array == fill_value] = 0
-                producto = reescalar(producto,escala_km)
-                
-                lista_datos_archivo = []
+            # Procedimiento único para la variable de Altura (o Altitud)
+            if ident == "Altura":
+                # Recortamos cada una de las ventanas.
+                lista_datos_variable = []
                 for index_coord in range(len(lista_ubicaciones)):
-                    px_x,px_y     = lista_ubicaciones[index_coord,0] , lista_ubicaciones[index_coord,1]
-                    ventana_array = GOES.obtener_ventana(producto.array,px_x,px_y,ventana=ventana)
-                    lista_datos_archivo.append(ventana_array)                    
+                    px_x,px_y = lista_ubicaciones[index_coord,0] , lista_ubicaciones[index_coord,1]
+                    ventana_array = GOES.obtener_ventana(altura,px_x,px_y,ventana=ventana)
+                    lista_datos_variable.append(ventana_array)
 
-                # Recolectamos los datos de cada archivo.
-                lista_datos_variable.append(lista_datos_archivo)
-        
+            # Procedimiento para cualquier otra variable  
+            else:
+                # Obtenemos la lista de archivos disponibles.
+                path_archivos  = f"{DIR_DESCARGAS}/{ident}/"
+                lista_archivos = os.listdir(path_archivos)
+                lista_archivos.sort() # Importante para respetar el orden cronológico.
+                num_archivos   = len(lista_archivos)
+
+                # Lista para guardar todos los elementos de una variable.
+                lista_datos_variable = []
+
+                for index_archivo in range(num_archivos):
+                    path_archivo = path_archivos + lista_archivos[index_archivo]
+                    producto     = GOES.Producto(path_archivo)
+
+                    # Mandamos los fill_values a 0
+                    fill_value = producto.fill_value
+                    producto.array[producto.array == fill_value] = 0
+                    producto = reescalar(producto,escala_km)
+                    
+                    lista_datos_archivo = []
+                    for index_coord in range(len(lista_ubicaciones)):
+                        px_x,px_y     = lista_ubicaciones[index_coord,0] , lista_ubicaciones[index_coord,1]
+                        ventana_array = GOES.obtener_ventana(producto.array,px_x,px_y,ventana=ventana)
+                        lista_datos_archivo.append(ventana_array)                    
+
+                    # Recolectamos los datos de cada archivo.
+                    lista_datos_variable.append(lista_datos_archivo)
+            
             # Creamos el dataset en el archivo .h5
             lista_datos_variable = np.array(lista_datos_variable)
             file.create_dataset(data=lista_datos_variable,name=ident,dtype=np.float32,compression="gzip")

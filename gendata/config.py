@@ -67,7 +67,7 @@ def string2bool(string):
 
 try:
     config = ConfigParser()
-    config.read_file(open(f"{DIR_REPO}/gendata.config","r"))
+    config.read_file(open(f"{DIR_SCRIPT}/gendata.config","r"))
 except FileNotFoundError:
     print("Error: No se encontró archivo de configuración.")
     sys.exit()
