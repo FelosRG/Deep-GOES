@@ -1,0 +1,16 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+gendata/__pycache__/
+Modelos/__pycache__/
+Scripts/__pycache__/
+lib/__pycache__/
+
+# gendata
+gendata/Datasets/
+gendata/Descargas/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+Notebooks/.ipynb_checkpoints

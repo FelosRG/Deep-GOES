@@ -299,7 +299,7 @@ def cmap_banda13():
     
     return custom_cmap
     
-def obtenerVentana(topo,x,y,ventana=200):
+def obtener_ventana(topo,x,y,ventana=200):
     """
     Dado un par de pixeles (px_x , px_y) o coordenadas,
     obtiene un subarray cuadrado, de radio (ventana),
@@ -494,7 +494,8 @@ def descargaIntervaloGOES16(producto,
                             datetime_final,
                             banda=None,
                             output_path="NETCDF_DATA/",
-                            verbose=False):
+                            verbose=False,
+                            saltos=1):
 
     # Creamos el directorio si no existe.
     Path(output_path).mkdir(parents=True, exist_ok=True)
@@ -517,6 +518,9 @@ def descargaIntervaloGOES16(producto,
     if banda != None:
         df = _identificarBandas(df) # Puse mas debug en la función.
         df = df[df["Banda"] == banda]
+
+    # Aplicamos los saltos
+    df = df.iloc[::saltos]
 
     descargados = 0
     a_descargar = len(df)
