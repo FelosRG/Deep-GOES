@@ -208,7 +208,7 @@ def rutina(path_figuras):
     # ------------------------------
 
     print("Descargando datos más recientes...")
-    #descargar_bandas()
+    descargar_bandas()
     print("Descarga completada!")
 
     # ----------------------------
@@ -296,6 +296,7 @@ def rutina(path_figuras):
     # Inferencia de los otros modelos
     cth = modelo_cth(X).numpy()
     cod = modelo_cod(X).numpy()
+    X = None # Liberando memoria
 
     # Volvemos a tamaño original
     cbm = reshape2window(cbm,shape_ventana)
@@ -320,6 +321,7 @@ def rutina(path_figuras):
     # -----------------------
     # PASO 5: Generamos plot
     # -----------------------
+    print("Generando el plot...")
 
     cbm = np.round(cbm)
     cbm[cbm == 0.0] = np.nan
