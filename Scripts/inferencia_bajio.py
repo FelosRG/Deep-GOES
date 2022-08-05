@@ -111,10 +111,11 @@ def plot_bajio(
     vmax=None,
     cbar=False,
     cbar_titulo="Valor",
-    titlo_secundario="Proyecto Deep-GOES",
+    titulo_secundario="Proyecto Deep-GOES",
     show=False,
     save="figura.jpg",
     alpha=0.7,
+    titulo_fecha = "",
 ):  
     if vmin is None: vmin = np.min(array)
     if vmax is None: vmax = np.max(array)
@@ -148,7 +149,8 @@ def plot_bajio(
         cbar.ax.tick_params(labelsize=18)
     
     ax.set_title(titulo,loc="left",weight="bold")
-    ax.set_title(titlo_secundario,loc="right",weight="bold")
+    ax.set_title(titulo_secundario,loc="right",weight="bold")
+    ax.set_title(titulo_fecha)
 
     if show:
         plt.show()
@@ -332,6 +334,10 @@ def rutina(path_figuras):
 
     cod = cod*cbm
 
+    # Generamos fecha
+    fecha = lista_fechas[0]
+    fecha_str = fecha.strftime("%d/%m/%Y, %H:%M:%S UTC")
+
     plot_bajio(
         cbm,
         titulo="Presencia de Nubosidad",
@@ -340,9 +346,10 @@ def rutina(path_figuras):
         vmax=1,
         cbar=False,
         cbar_titulo="Valor",
-        titlo_secundario="Proyecto Deep-GOES",
+        titulo_secundario="Proyecto Deep-GOES",
         show=False,
         save=f"{path_figuras}cbm.jpg",
+        titulo_fecha=fecha_str,
     )
 
     plot_bajio(
@@ -353,10 +360,11 @@ def rutina(path_figuras):
         vmax=17,
         cbar=True,
         cbar_titulo="Altura [Km]",
-        titlo_secundario="Proyecto Deep-GOES",
+        titulo_secundario="Proyecto Deep-GOES",
         show=False,
         save=f"{path_figuras}cth.jpg",
         alpha=0.5,
+        titulo_fecha=fecha_str,
     )
 
     plot_bajio(
@@ -367,10 +375,11 @@ def rutina(path_figuras):
         vmax=40,
         cbar=True,
         cbar_titulo="Opacidad",
-        titlo_secundario="Proyecto Deep-GOES",
+        titulo_secundario="Proyecto Deep-GOES",
         show=False,
         save=f"{path_figuras}cod.jpg",
         alpha=0.95,
+        titulo_fecha=fecha_str,
     )
 
     print("Figuras completadas!")
