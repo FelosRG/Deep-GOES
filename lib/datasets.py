@@ -16,6 +16,7 @@ FelosRG@github
 import h5py
 import math
 import numpy as np
+from tensorflow.keras import utils
 
 def normalizarVariable(array,valor_min=None,valor_max=None,frac_tomar=1):
     """
@@ -32,7 +33,7 @@ def normalizarVariable(array,valor_min=None,valor_max=None,frac_tomar=1):
         valor_min = np.min(array)
     
     # Normalizamos
-    array = (array - valor_min) / valor_max
+    array = (array - valor_min) / (valor_max - valor_min)
     
     # Removemos el execeso
     if frac_tomar != 1:
@@ -112,7 +113,7 @@ def normalizarDataset(
 def desnormalizar(array,variables_norm):
     v_min = variables_norm[0]
     v_max = variables_norm[1]
-    return (array*v_max) + v_min 
+    return (array*(v_max-v_min) + v_min)
 
 
 

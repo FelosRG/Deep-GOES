@@ -563,7 +563,7 @@ def descargaIntervaloGOES16(producto,
 
 
 
-def datosActualesGOES16(producto,
+def descargar_actual_GOES(producto,
                         banda=None,
                         output_name="GOES-descarga.nc"):
     """
@@ -614,7 +614,7 @@ def datosActualesGOES16(producto,
     
     # Descarga de los datos.
     fs.get(file_name,output_name)
-    print("Descargar completa.")
+    print("Descarga completa.")
 
 
 def estado_general(nc,variable):
