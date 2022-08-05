@@ -119,6 +119,16 @@ def plot_bajio(
     if vmin is None: vmin = np.min(array)
     if vmax is None: vmax = np.max(array)
 
+    # Abrirmos recursos
+    with h5py.File(PATH_CRD,"r") as file:
+        lat = file["lats"][:]
+        lon = file["lons"][:]
+    lat = lat[1079+SOLAPAMIENTO:1348-SOLAPAMIENTO,406+SOLAPAMIENTO:675-SOLAPAMIENTO]
+    lon = lon[1079+SOLAPAMIENTO:1348-SOLAPAMIENTO,406+SOLAPAMIENTO:675-SOLAPAMIENTO]
+
+    # Abrimos geopandas
+    geodf = geopd.read_file(PATH_SHP)
+
     fig ,ax = plt.subplots(1,figsize=(19,19))
     # Ploteamos los valores
     colorplot = ax.pcolor(lon,lat,array,shading="nearest",cmap=cmap,vmin=vmin,vmax=vmax,alpha=alpha)
@@ -191,15 +201,6 @@ for key,coord in localizaciones.items():
     lon_lug.append(coord[0])
     lat_lug.append(coord[1])
 
-# Abirmos y recortamos array de coordenadas
-with h5py.File(PATH_CRD,"r") as file:
-    lat = file["lats"][:]
-    lon = file["lons"][:]
-lat = lat[1079+SOLAPAMIENTO:1348-SOLAPAMIENTO,406+SOLAPAMIENTO:675-SOLAPAMIENTO]
-lon = lon[1079+SOLAPAMIENTO:1348-SOLAPAMIENTO,406+SOLAPAMIENTO:675-SOLAPAMIENTO]
-
-# Abrimos geopandas
-geodf = geopd.read_file(PATH_SHP)
 
 def rutina(path_figuras):
 
