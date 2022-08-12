@@ -11,6 +11,26 @@ Contacto: moni.borunda@ciencias.unam.mx <br>
 
 El objetivo de este proyecto es poder predecir las condiciones de la atmósfera a un corto plazo de 30 min a 1 hora, particularmente es de mi interés predecir la dinámica de las propiedades de las nubes como su movimiento y evoloción de sus características físicas principales. Para ello usaré técnicas del deep-learning (redes neuronales profundas) para intentar resolver este problema.
 
+## Índice  
+- [Deep-GOES :earth_americas:](#deep-goes-earth_americas)
+  - [Índice](#índice)
+  - [Instalación de los requerimientos](#instalación-de-los-requerimientos)
+  - [Descarga de los datos satelitales](#descarga-de-los-datos-satelitales)
+    - [Limitaciones](#limitaciones)
+  - [Modelos para la identificación de las propiedades de las nubes](#modelos-para-la-identificación-de-las-propiedades-de-las-nubes)
+    - [Zona de estudio](#zona-de-estudio)
+    - [Modelo para la identificación de nubosidad](#modelo-para-la-identificación-de-nubosidad)
+      - [Inputs](#inputs)
+      - [Output](#output)
+      - [Resultados :robot:](#resultados-robot)
+      - [Detalles para el entrenamiento](#detalles-para-el-entrenamiento)
+    - [Modelo para la estimación de la altura de las nubes](#modelo-para-la-estimación-de-la-altura-de-las-nubes)
+      - [Inputs](#inputs-1)
+      - [Output](#output-1)
+      - [Resultados :robot:](#resultados-robot-1)
+      - [Detalles para el entrenamiento](#detalles-para-el-entrenamiento-1)
+  - [Agradecimientos](#agradecimientos)
+    
 ## Instalación de los requerimientos
 
 Para poder usar de estos programas y scripts es necesario tener python3 instalado https://www.python.org/downloads/ <br>
@@ -50,7 +70,7 @@ Los parámetros disponibles son:
 | limite_superior_longitud | -99.0 | Coordenada que limitará la región de donde se obtendran los datos.|
 | resolucion_grid | 30 | Se dividirá la región indicada por las coordendas en un grid o en cuadrantes cuyo número dependerá de esta configuración. En cada uno de estos cuadrantes se obtendrán los datos satelitales. El número de cuadrantes generados  es igual a la resolucion_grid² |
 
-### :warning: Limitaciones
+### Limitaciones
 * El satélite GOES-16 fue puesto en operación en el 2016, recomiendo solo descargar datos apartir del 2017.
 * La región geográfica indicada con las coordenadas solo puede estar dentro de los siguientes paises y regiones:<br> México :mexico:, Estados Unidos :us:, Cuba :cuba:, Haiti :haiti: ,República Dominicana :dominican_republic:, el golfo de México y parte del mar caribe. 
  
@@ -64,7 +84,7 @@ El resultado del script será un archivo .h5 ubicado en /gendata/Datasets/ , est
 
  :bell: Para un ejemplo de como examinar el archivo .h5 ver los notebooks incluidos en el repositorio.
 
-## Modelos pre-entrenados :construction: En progreso :construction:
+## Modelos para la identificación de las propiedades de las nubes
 
 ### Zona de estudio
 Como zona de estudio para el entrenamiento de los modelos incluidos en este repositorio se escogió la zona del bajio que abarca el estado de Querétaro y Guanajuato así como sus alrededores.
