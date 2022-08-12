@@ -1,4 +1,4 @@
-# Deep-GOES
+# Deep-GOES :earth_americas:
 
 Proyecto de Tesis de Licenciatura de Adrián Ramírez. <br>
 Facultad de Ciencias, UNAM <br>
@@ -13,23 +13,26 @@ El objetivo de este proyecto es poder predecir las condiciones de la atmósfera 
 
 
 ## Instalación de los requerimientos
+
 Para poder usar de estos programas y scripts es necesario tener python3 instalado https://www.python.org/downloads/ <br>
+
+
+
 
 Una vez instalado python instalamos las librerías requeridas con
 
 ```
 pip3 install requeriments.txt
 ```
-
-## Zona de estudio
-Como zona de estudio para el entrenamiento de los modelos incluidos en este repositorio se escogió la zona del bajio que abarca el estado de Querétaro y Guanajuato así como sus alrededores.
-
-![Zona del bajio](fig/zona_bajio.jpg)
+:warning: Para poder usar tambien los notebooks incluidos se recomienda tambien instalar anaconda https://www.anaconda.com/
 
 ## Descarga de los datos satelitales
-Los scripts para la descarga de los datos satelitales se encuentran en el directorio de **gendata**. La descarga de los datos es administrada en su totalidad por el script *gendata.py*.<br>
 
-La configuración de la descarga se encuentra en el archivo *gendata.config*. Entre los parámetros disponibles se encuetran:
+El script para la descarga de los datos satelitales se encuentra en el directorio de **gendata**. La descarga de los datos es administrada en su totalidad por el script *gendata.py*.<br>
+
+La configuración de la descarga se encuentra en el archivo *gendata.config*. Modificando los parámetros dentro de este archivo se modifica el comporamiento del script *gendata.py*.<br>
+
+Los parámetros disponibles son:
 
 | Parametro       | valor por Default | Descripcion                                                    |
 |-----------------|-------------------|----------------------------------------------------------------|
@@ -42,8 +45,27 @@ La configuración de la descarga se encuentra en el archivo *gendata.config*. En
 | saltear_archivos| 2                 | De entre los archivos encontrados para su descarga dado las configuraciones anteriores solo se tomarán cada cierto número de archivos salteados. Por ejemplo, los datos satelitales se publican cada 5 min. Si solo queremos descargar datos cada 10 min, entonces establecemos saltear_archivos en 2, así solo se tomará 1 archivo de cada 2 disponibles.|
 | bandas  | 4,6,14,16,CBM,COD,CTH,CTP | Las bandas y productos que se descargarán. Productos disponibles: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,CBM,CTH,COD,CAPE,CTP.Para más información acerca de estas bandas y productos consultar las secciones siguientes.|
 | ventana  | 18           | Número de pixeles de radio de cada una de las imágenes obtener,  el tamaño final de las imágenes estará dado por (ventana*2)+1|
+| reescalado  | 2           | No todas las bandas y productos tienen la misma resolución espacial, por lo que para formar el dataset es necesario reescalar las bandas a una resolución común. La configuración esta dada en kilómetros.|
+| limite_inferior_latitud | 19.80 | Cordenada que limitará la región de donde se obtendran los datos.|
+| limite_superior_latitud | 21.81 | Coordenada que limitará la región de donde se obtendran los datos.|
+| limite_inferior_longitud | -102.18 | Coordenada que limitará la región de donde se obtendran los datos.|
+| limite_superior_longitud | -99.0 | Coordenada que limitará la región de donde se obtendran los datos.|
+| resolucion_grid | 30 | Se dividirá la región indicada por las coordendas en un grid o en cuadrantes cuyo número dependerá de esta configuración. En cada uno de estos cuadrantes se obtendrán los datos satélitales. El número de cuadrantes generados  es igual a la resolucion_grid² |
 
+Una vez establecidos los parámetros deseados el siguiente paso es ejecutar el script gendata.py
 
+```
+python3 gendata.py
+```
+
+El resultado del script será un archivo .h5 ubicado en /gendata/Datasets/ , este archivo contendrá toda la información recopilada segun las configuraciones de fecha ,coordenadas, y bandas indicadas.<br>
+
+ :bell: Para un ejemplo de como examinar el archivo .h5 ver los notebooks incluidos en el repositorio.
+
+## Zona de estudio
+Como zona de estudio para el entrenamiento de los modelos incluidos en este repositorio se escogió la zona del bajio que abarca el estado de Querétaro y Guanajuato así como sus alrededores.
+
+![Zona del bajio](fig/zona_bajio.jpg)
 
 
 ## Resultados de los modelos preeliminares
