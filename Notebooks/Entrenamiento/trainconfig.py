@@ -14,8 +14,8 @@ PATH_DATASET  = f"{DIR_REPO}/gendata/Datasets/dataset.h5"
 PATH_DATASET_TRAIN = f"{DIR_REPO}/gendata/Datasets/dataset_train.h5"
 PATH_DATASET_TEST  = f"{DIR_REPO}/gendata/Datasets/dataset_test.h5"
 PATH_DATASET_GAN   = f"{DIR_REPO}/gendata/Datasets/dataset_GAN.h5"
-PATH_DIC_NORM = f"{DIR_REPO}/Modelos/Pesos/norm.dic"
 DIR_PESOS  = f"{DIR_REPO}/Modelos/Pesos/"
+PATH_DIC_NORM = f"{DIR_PESOS}/norm.dic"
 
 sys.path.append(DIR_LIB)
 sys.path.append(DIR_MODELOS)
@@ -24,6 +24,9 @@ import modelos
 
 BATCH_SIZE = 256
 TEST_FRAC  = 0.1
+
+# Extraemos el diccionario de normalización
+DIC_NORM = modelos.normalizacion
 
 # Dimención del ruido de la red GAN
 GAN_NOISE_DIM = 50
@@ -60,7 +63,8 @@ def preparar_dataset():
             # Extraemos los datos.
             with h5py.File(PATH_DATASET,"r") as file: array = file[key][:]
             # Normalizamos
-            array,vmin,vmax = datasets.normalizarVariable(array)
+            vmin,vmax = DIC_NORM[key]
+            array = (array - vmin)/(vmax-vmin)
             dic_norm[key] = (vmin,vmax)
             # Ajustamos el shape
             if key == "Altura":
@@ -100,7 +104,7 @@ class SecuenciaHDF5(utils.Sequence):
     y randomizados ya que el iterador solo se encarga de
     suministrar los datos a el bucle de entrenamiento.
     """
-    def __init__(self,X_keys,Y_keys,batch_size,path_dataset,callback_y=None,callback_x=None):
+    def __init__(self,X_keys,Y_keys,batch_size,path_dataset,callback_y=None,callback_x=None,callback_sample_weight=None):
         
         self.batch_size   = batch_size
         self.path_dataset = path_dataset
@@ -109,6 +113,7 @@ class SecuenciaHDF5(utils.Sequence):
         
         self.callback_x = callback_x
         self.callback_y = callback_y
+        self.callback_sample_weight = callback_sample_weight
         
         # Obtenemos el número de datos.
         with h5py.File(path_dataset,"r") as file: 
@@ -143,8 +148,12 @@ class SecuenciaHDF5(utils.Sequence):
                 
             # Aplicamos la función de callback para y
             if self.callback_y is not None: Y = self.callback_y(Y)
-              
-        return X,Y
+
+        if self.callback_sample_weight is not None:
+            return self.callback_sample_weight(X,Y)
+        else:
+            return X,Y
+
 
 
 def preparar_dataset_GAN():

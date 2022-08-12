@@ -6,7 +6,7 @@ import numpy as np
 import geopandas as geopd
 from   shapely.geometry import Point
 
-import lib.GOES as GOES
+import GOES
 
 def check_poligono(geopd,point_x,point_y):
     """ Revisa si un punto está dentro de algun poligono del geopandas.
@@ -64,6 +64,7 @@ def asignarNombreArchivo(lat,lon,extensión="csv"):
     return nombre
 
 def obtenerIntervaloUTC(
+                        año,
                         dia_delta,
                         HORA_INICIO_UTC,
                         MIN_INICIO_UTC,
@@ -73,9 +74,9 @@ def obtenerIntervaloUTC(
     """
     Obtiene el intervalo de descargas.
     """
-    fecha_inicio = datetime.datetime(2020,1,1,HORA_INICIO_UTC,MIN_INICIO_UTC)
+    fecha_inicio = datetime.datetime(año,1,1,HORA_INICIO_UTC,MIN_INICIO_UTC)
     fecha_inicio = fecha_inicio + datetime.timedelta(days=dia_delta)
-    fecha_final  = datetime.datetime(2020,1,1,HORA_FINAL_UTC,MIN_FINAL_UTC)
+    fecha_final  = datetime.datetime(año,1,1,HORA_FINAL_UTC,MIN_FINAL_UTC)
     fecha_final  = fecha_final + datetime.timedelta(days=dia_delta)
     return fecha_inicio , fecha_final
 

@@ -1,3 +1,4 @@
+from calendar import c
 import os
 import sys
 
@@ -30,6 +31,10 @@ import geopandas as geopd
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.lib.stride_tricks import as_strided
+
+import tensorflow as tf
+physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 def num_ventanas_axis(shape_axis,ventana,solapamiento):
     a = shape_axis - 2*solapamiento
@@ -102,6 +107,7 @@ def descargar_bandas():
     GOES.descargar_actual_GOES("ABI-L1b-RadC",banda=6,output_name=f"{DIR_SCRIPT}/Descargas/06.nc")
     GOES.descargar_actual_GOES("ABI-L1b-RadC",banda=14,output_name=f"{DIR_SCRIPT}/Descargas/14.nc")
     GOES.descargar_actual_GOES("ABI-L1b-RadC",banda=16,output_name=f"{DIR_SCRIPT}/Descargas/16.nc")
+    GOES.descargar_actual_GOES("ABI-L2-ACHAC",banda=None,output_name=f"{DIR_SCRIPT}/Descargas/CTH.nc")
 
 def plot_bajio(
     array,
@@ -211,7 +217,7 @@ def rutina(path_figuras):
     # ------------------------------
 
     print("Descargando datos más recientes...")
-    descargar_bandas()
+    #descargar_bandas()
     print("Descarga completada!")
 
     # ----------------------------
@@ -224,6 +230,8 @@ def rutina(path_figuras):
     lista_fechas = []
     datos  = {}
     for path_producto in lista_archivos:
+        if path_producto == "CTH.nc":
+            continue
         # Abrimos producto.
         producto = GOES.Producto(path=f"{DIR_SCRIPT}/Descargas/{path_producto}")
         # Obtenemos y recortamos el array.
@@ -320,6 +328,16 @@ def rutina(path_figuras):
 
     vmin,vmax = dic_norm["COD"]
     cod = cod*(vmax-vmin) + vmin
+    
+    # Abrimos CTH real
+    producto = GOES.Producto(path=f"{DIR_SCRIPT}/Descargas/CTH.nc")
+    producto.zoom(5)
+    cth_real = np.copy(producto.array[1079+4:1348-4,406+4:675-4])
+    cth_real = cth_real.astype(float)
+    #cth_real = np.round(cbm)*cth_real
+    cth_real = cth_real / 1000
+    cth_real[cth_real > 18] = np.nan
+    
 
     # -----------------------
     # PASO 5: Generamos plot
@@ -363,6 +381,21 @@ def rutina(path_figuras):
         titulo_secundario="Proyecto Deep-GOES",
         show=False,
         save=f"{path_figuras}cth.jpg",
+        alpha=0.5,
+        titulo_fecha=fecha_str,
+    )
+
+    plot_bajio(
+        cth_real,
+        titulo="Altura de tope de las nubes",
+        cmap="nipy_spectral",
+        vmin=0,
+        vmax=17,
+        cbar=True,
+        cbar_titulo="Altura [Km]",
+        titulo_secundario="Proyecto Deep-GOES",
+        show=False,
+        save=f"{path_figuras}cth_real.jpg",
         alpha=0.5,
         titulo_fecha=fecha_str,
     )

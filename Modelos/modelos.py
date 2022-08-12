@@ -2,6 +2,22 @@ import tensorflow as tf
 from  tensorflow.keras import layers
 
 
+normalizacion = {
+    "4":(0,20),
+    "6":(0,9),
+    "8":(0.5,3),
+    "9":(1.8,8.2),
+    "10":(2.2,16),
+    "14":(20,130),
+    "16":(30,115),
+    "CM":(0,1),
+    "CTH":(0,14_500),
+    "COD":(0,30),
+    "CAPE":(0,250),
+    "CTP":(0,4),
+    "Altura":(0,3500),
+}
+
 class Modelo_CBM(tf.keras.Model):
     """
     -------------------
@@ -23,10 +39,11 @@ class Modelo_CBM(tf.keras.Model):
         [prob_nube,prob_clearsky]
     """
 
-    def __init__(self):
-        super().__init__(name="CloudBinaryMask")
+    def __init__(self,**kwards):
+        super().__init__(**kwards)
 
         self.train = True
+        self.class_weight = {0:1,1:0.383}
 
         # [Primera parte densa]
         self.denso1 = layers.Dense(10,activation="relu",input_shape=(37,37,5))
@@ -66,6 +83,23 @@ class Modelo_CBM(tf.keras.Model):
         x = tf.keras.Input(shape=(37, 37, 5))
         model = tf.keras.Model(inputs=[x], outputs=self.call(x))
         return model.summary()
+
+
+class Modelo_CTP(tf.keras.Model):
+    """
+    -------------------
+    -Cloud Top Phase-
+    -------------------
+
+    Modelo para la clasificación del tipo
+    de la nube.
+
+
+    """
+    def __init__(self,**kwards):
+        super().__init__(**kwards)
+        self.class_weigts = {0:0.159,1:0.122,2:0.716,3:1,4:0.0578}
+
 
 
 class Modelo_CTH(tf.keras.Model):
@@ -241,7 +275,7 @@ class GenBlock(layers.Layer):
 class DisBlock(layers.Layer):
     def __init__(self,canales_output,kernel_size=4,padding="same",alpha=0.2,**kwargs):
         super().__init__(**kwargs)
-        self.conv2d  = layers.Conv2D(canales_output,kernel_size,padding,use_bias=False)
+        self.conv2d  = layers.Conv2D(canales_output,kernel_size,padding=padding,use_bias=False)
         self.maxpool = layers.MaxPooling2D()
         self.batch_norm = layers.BatchNormalization()
         self.activation = layers.LeakyReLU(alpha)
@@ -324,7 +358,7 @@ class Modelo_Encoder(tf.keras.Model):
         self.block2 = DisBlock(32)
         self.block3 = DisBlock(16)
         self.flatten = layers.Flatten()
-        self.denso  = layers.Dense(num_inputs,activation="tanh")
+        self.denso  = layers.Dense(num_inputs,activation="linear")
     def call(self,X):
         # Input (None,37,37,3)
         output = self.block1(X) # Output (None,18,18,64)
@@ -333,6 +367,7 @@ class Modelo_Encoder(tf.keras.Model):
         output = self.flatten(output) # Output (None,256)
         output = self.denso(output)   # Output (None,50)
         return output
+    
     def summary(self):
         x = tf.keras.Input(shape=(37,37,3))
         model = tf.keras.Model(inputs=[x], outputs=self.call(x))

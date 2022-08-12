@@ -32,6 +32,8 @@ productos = {
     "CM" :"ABI-L2-ACMC" ,
     "CAPE":"ABI-L2-DSIC",
     "COD":"ABI-L2-CODC" ,
+    "CTP":"ABI-L2-ACTPC",
+    "DSR":"ABI-L2-DSRC" ,
 }
 
 variables = {
@@ -55,7 +57,10 @@ variables = {
     "CM" :"BCM",
     "CAPE":"CAPE",
     "COD":"COD",
+    "CTP":"Phase",
+    "DSR":"DSR",
 }
+
 
 def string2bool(string):
     if string in ["True","true","Verdadero","verdadero"]:
