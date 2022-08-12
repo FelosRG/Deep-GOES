@@ -68,7 +68,7 @@ El resultado del script será un archivo .h5 ubicado en /gendata/Datasets/ , est
 
  :bell: Para un ejemplo de como examinar el archivo .h5 ver los notebooks incluidos en el repositorio.
 
-## Modelos pre-entrenados
+## Modelos pre-entrenados :construction: En progreso :construction:
 
 ### Zona de estudio
 Como zona de estudio para el entrenamiento de los modelos incluidos en este repositorio se escogió la zona del bajio que abarca el estado de Querétaro y Guanajuato así como sus alrededores.
@@ -76,11 +76,38 @@ Como zona de estudio para el entrenamiento de los modelos incluidos en este repo
 ![Zona del bajio](fig/zona_bajio.jpg)
 
 
-## Resultados de los modelos preeliminares
+### Modelo para la identificación de nubosidad
 
-### Identificación de las nubes
+Este modelo entrenado con el producto de CBM (Cloud Binary Mask) del satélite GOES-16 es capaz de identificar las zonas con nubosidad. El modelo pre-entrenado alcanza una presición del 96% en referencia al producto CBM.
 
-### Estimación de la altura de las nubes
+:memo: Este modelo demuestra las capacidades del deep-learning y las redes neuronales con el uso de datos satelitales. Adicionalmente puede ser utilizado como reemplazo del producto de Cloud Binary Mask (CBM) cuando no este disponible.
+
+#### Inputs
+Como entrada el modelo requiere unas imágenes 37x37 con los siguientes canales:
+* Banda 4
+* Banda 6
+* Banda 14
+* Banda 16
+* Altura sobre el nivel del mar
+
+#### Output
+Imágenes 37x37 con los valores 1 donde se ha identificado nubosidad (color amarillo) y 0 donde no se ha identificado ninguna nubosidad (color morado).
+
+![Zona del bajio](fig/CBM_input_output.jpg)
+
+#### Resultados :robot:
+
+![Zona del bajio](fig/CBM_ejemplos.jpg)
+*Comparativa del producto Cloud Binary Mask y los resultados del modelo de deep-lerning.<br>Arriba: Algoritmo Cloud Binary Mask del satélite.<br>Abajo: Modelo entrenado*
+
+#### Detalles para el entrenamiento
+:bell: Se requiere tener instalado conda usar los notebooks de entrenamiento. 
+
+ :bell: Se recomienda tener una GPU (targeta gráfica) nvidia  en el equipo en el que se entrene el modelo. Así como los drivers y CUDA instalado.
+
+Para re-entrenar este modelo hay que seguir los siguientes pasos:
+1. Descargar y general un dataset con el script **gendata.py**, el dataset debe de tener las bandas 4,6,14,16,Altura,CM
+2. Correr las celdas del jupyter notebook ubicado en /Notebooks/Entrenamiento/CBM.ipynb
 
 ## Agradecimientos
 Este estudio se incorporará en el trabajo de investigación del proyecto “Predicción del recurso solar
