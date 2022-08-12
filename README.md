@@ -28,6 +28,8 @@ pip3 install requeriments.txt
 
 ## Descarga de los datos satelitales
 
+:bell: Esta sección es sobre todo útil si se desea obtener nuevos datos satélitales para el re-entrenamiento de los modelos de deep-learning. Si lo que se desea es solo usar los modelos pre-entrenados consultar las secciones siguientes.
+
 El script para la descarga de los datos satelitales se encuentra en el directorio de **gendata**. La descarga de los datos es administrada en su totalidad por el script *gendata.py*.<br>
 
 La configuración de la descarga se encuentra en el archivo *gendata.config*. Modificando los parámetros dentro de este archivo se modifica el comporamiento del script *gendata.py*.<br>
@@ -52,6 +54,10 @@ Los parámetros disponibles son:
 | limite_superior_longitud | -99.0 | Coordenada que limitará la región de donde se obtendran los datos.|
 | resolucion_grid | 30 | Se dividirá la región indicada por las coordendas en un grid o en cuadrantes cuyo número dependerá de esta configuración. En cada uno de estos cuadrantes se obtendrán los datos satélitales. El número de cuadrantes generados  es igual a la resolucion_grid² |
 
+### :warning: Limitaciones
+* El satélite GOES-16 fue puesto en operación en el 2016, recomiendo solo descargar datos apartir del 2017.
+* La región geográfica indicada con las coordenadas solo puede estar dentro de los siguientes paises y regiones:<br> México :mexico:, Estados Unidos :us:, Cuba :cuba:, Haiti :haiti: ,República Dominicana :dominican_republic:, el golfo de México y parte del mar caribe. 
+ 
 Una vez establecidos los parámetros deseados el siguiente paso es ejecutar el script gendata.py
 
 ```
@@ -62,7 +68,9 @@ El resultado del script será un archivo .h5 ubicado en /gendata/Datasets/ , est
 
  :bell: Para un ejemplo de como examinar el archivo .h5 ver los notebooks incluidos en el repositorio.
 
-## Zona de estudio
+## Modelos pre-entrenados
+
+### Zona de estudio
 Como zona de estudio para el entrenamiento de los modelos incluidos en este repositorio se escogió la zona del bajio que abarca el estado de Querétaro y Guanajuato así como sus alrededores.
 
 ![Zona del bajio](fig/zona_bajio.jpg)
