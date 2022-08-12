@@ -88,7 +88,7 @@ Como entrada el modelo requiere unas imágenes 37x37 con los siguientes canales:
 * Banda 6
 * Banda 14
 * Banda 16
-* Altura sobre el nivel del mar
+* Altura del terreno sobre el nivel del mar
 
 #### Output
 Imágenes 37x37 con los valores 1 donde se ha identificado nubosidad (color amarillo) y 0 donde no se ha identificado ninguna nubosidad (color morado).
@@ -131,8 +131,10 @@ Imágenes 37x37 con los valores de la altura del tope de las nubes a una resoluc
 A continuación se muestra una comparativa del producto de Cloud Top Height del satelite contra lo estimado por el modelo de deep-learning.
 
 ![Zona del bajio](fig/CTH_ejemplos.jpg)
+*Observar la mejora de la resolución espacial al usar el modelo de deep-learnig (imágenes inferiores)*
 
-
+![Zona del bajio](fig/CTH_real_bajio.jpg)
+![Zona del bajio](fig/CTH_inferencia_bajio.jpg)
 
 ## Agradecimientos
 Este estudio se incorporará en el trabajo de investigación del proyecto “Predicción del recurso solar
