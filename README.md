@@ -24,9 +24,26 @@ pip3 install requeriments.txt
 ## Zona de estudio
 Como zona de estudio para el entrenamiento de los modelos incluidos en este repositorio se escogió la zona del bajio que abarca el estado de Querétaro y Guanajuato así como sus alrededores.
 
-![Zona del bajio](fig/CTH_inferencia_bajio.jpg)
+![Zona del bajio](fig/zona_bajio.jpg)
 
-## Resultados preeliminares
+## Descarga de los datos satelitales
+Los scripts para la descarga de los datos satelitales se encuentran en el directorio de **gendata**. La descarga de los datos es administrada en su totalidad por el script *gendata.py*.<br>
+
+La configuración de la descarga se encuentra en el archivo *gendata.config*. Entre los parámetros disponibles se encunetran:
+
+| Parametro       | valor por Default | Descripcion                                                    |
+|-----------------|-------------------|----------------------------------------------------------------|
+| nombre_dataset  | dataset           | Nombre del archivo con los datos recopilados.                  |
+| num_dias        | 3                 | Numero de dias de los que se descargaran los datos satelitales |
+| fecha_inicio    | 2022/07/24        | Fecha de inicio para la descarga de los datos satelitales      |
+| fecha_final     | 2022/07/26        | Fecha final  para la descarga de los datos satelitales         |
+| fecha_final     | 2022/07/26        | Fecha final  para la descarga de los datos satelitales         |
+| hora_inicio_utc | 2022/07/26        | Fecha final  para la descarga de los datos satelitales         |
+| fecha_final     | 2022/07/26        | Fecha final  para la descarga de los datos satelitales         |
+| hora_inicio_utc | 00:00             | Hora de inicio para la descarga de los datos satelitales       |
+
+
+## Resultados de los modelos preeliminares
 
 ### Identificación de las nubes
 
