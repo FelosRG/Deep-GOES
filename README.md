@@ -7,8 +7,8 @@ Contacto: felos@ciencias.unam.mx
 
 Asesora de tesis <br>
 Dra. Mónica Borunda Pacheco <br>
-Contacto: moni.borunda@ciencias.unam.mx <br>
-
+Contacto: moniborunda@ciencias.unam.mx <br>
+s
 El objetivo de este proyecto es poder predecir las condiciones de la atmósfera a un corto plazo de 30 min a 1 hora, particularmente es de mi interés predecir la dinámica de las propiedades de las nubes como su movimiento y evoloción de sus características físicas principales. Para ello usaré técnicas del deep-learning (redes neuronales profundas) para intentar resolver este problema.
 
 ## Índice  
