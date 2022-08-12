@@ -109,6 +109,31 @@ Para re-entrenar este modelo hay que seguir los siguientes pasos:
 1. Descargar y general un dataset con el script **gendata.py**, el dataset debe de tener las bandas 4,6,14,16,Altura,CM
 2. Correr las celdas del jupyter notebook ubicado en /Notebooks/Entrenamiento/CBM.ipynb
 
+### Modelo para la estimación de la altura de las nubes
+Una vez identificadas las nubes ya sea con el Cloud Binary Mask o con el modelo de identificación de nubes el siguiente paso es identificar la altura de estas.<br>
+El siguiente modelo está entrenado con el producto Cloud Top Height (CTH) del satélite. 
+
+:memo: Con este modelo se pretende mejorar la resolución del producto CTH del satélite de 10km a 2km por pixel.
+
+#### Inputs
+Como entrada el modelo requiere unas imágenes 37x37 con los siguientes canales:
+* Banda 4
+* Banda 6
+* Banda 14
+* Banda 16
+* Altura sobre el nivel del mar
+* Cloud Binary Mask (CBM)
+
+#### Output
+Imágenes 37x37 con los valores de la altura del tope de las nubes a una resolución de 2km por pixel.
+
+#### Resultados :robot:
+A continuación se muestra una comparativa del producto de Cloud Top Height del satelite contra lo estimado por el modelo de deep-learning.
+
+![Zona del bajio](fig/CTH_ejemplos.jpg)
+
+
+
 ## Agradecimientos
 Este estudio se incorporará en el trabajo de investigación del proyecto “Predicción del recurso solar
 usando imágenes satelitales para impulsar el desarrollo sostenible en comunidades aisladas con
